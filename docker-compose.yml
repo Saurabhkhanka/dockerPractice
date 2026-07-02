@@ -1,0 +1,16 @@
+services:
+  backend:
+    build: ./backend
+    container_name: backend-practice
+    ports:
+      - "5001:5001"
+    environment:
+      - PORT=5001
+
+  frontend:
+    build: ./frontend
+    container_name: frontend-practice
+    ports:
+      - "80:80"
+    depends_on:
+      - backend

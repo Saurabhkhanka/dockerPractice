@@ -1,0 +1,19 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Copy package lock with node user permissions
+COPY --chown=node:node package*.json ./
+
+# Install only production dependencies
+RUN npm ci --only=production
+
+# Copy remaining code with node user permissions
+COPY --chown=node:node . .
+
+# Run the container under the non-root node user
+USER node
+
+EXPOSE 5001
+
+CMD [ "node", "server.js" ]
