@@ -4,7 +4,6 @@ import './App.css'
 import axios from 'axios';
 
 function App() {
-  const a: number = "hello";
   const [data, setData] = useState([]);
   const handleCallApi = async () => {
     const response = await axios.get('http://localhost:5001');
