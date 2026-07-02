@@ -1,0 +1,54 @@
+name: CI/CD (Docker Build & Push)
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+
+jobs: 
+  # --- Backend Job ---
+  build-and-push-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      # 1. Docker Hub में लॉगिन करें
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      # 2. बिल्ड करें और पुश करें
+      - name: Build and Push Backend Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/backend-practice:latest ./backend
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/backend-practice:latest
+
+  # --- Frontend Job ---
+  build-and-push-frontend:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # 1. Docker Hub में लॉगिन करें
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      # 2. बिल्ड करें और पुश करें
+      - name: Build and Push Frontend Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/frontend-practice:latest ./frontend
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/frontend-practice:latest
